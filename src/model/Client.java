@@ -5,7 +5,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@NamedQuery(name="Client.findAll", query="SELECT c FROM Client c ORDER BY c.surname")
+@NamedQuery(name="Client.findAll", query="SELECT c FROM Client c ORDER BY c.id")
 public class Client implements Serializable, IModel{
 	private static final long serialVersionUID = 1L;
 
@@ -20,8 +20,7 @@ public class Client implements Serializable, IModel{
 	@OneToMany(mappedBy="client")
 	private List<Order> orders;
 
-	public Client() {
-	}
+	public Client() {}
 
 	public int getId() {
 		return this.id;

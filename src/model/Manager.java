@@ -3,25 +3,16 @@ package model;
 import java.io.Serializable;
 import javax.persistence.*;
 
-
-/**
- * The persistent class for the manager database table.
- * 
- */
 @Entity
-@NamedQuery(name="Manager.findAll", query="SELECT m FROM Manager m ORDER BY m.surname")
+@NamedQuery(name="Manager.findAll", query="SELECT m FROM Manager m ORDER BY m.id")
 public class Manager implements Serializable, IModel{
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	private int id;
-
 	private String email;
-
 	private String name;
-
 	private String phone;
-
 	private String surname;
 
 	//bi-directional many-to-one association to Flat
@@ -29,8 +20,7 @@ public class Manager implements Serializable, IModel{
 	@JoinColumn(name="id_flat")
 	private Flat flat;
 
-	public Manager() {
-	}
+	public Manager() {}
 
 	public int getId() {
 		return this.id;

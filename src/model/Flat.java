@@ -4,13 +4,8 @@ import java.io.Serializable;
 import javax.persistence.*;
 import java.util.List;
 
-
-/**
- * The persistent class for the flat database table.
- * 
- */
 @Entity
-@NamedQuery(name="Flat.findAll", query="SELECT f FROM Flat f ORDER BY f.address")
+@NamedQuery(name="Flat.findAll", query="SELECT f FROM Flat f ORDER BY f.id")
 public class Flat implements Serializable, IModel{
 	private static final long serialVersionUID = 1L;
 
@@ -28,8 +23,7 @@ public class Flat implements Serializable, IModel{
 	@OneToMany(mappedBy="flat")
 	private List<Order> orders;
 
-	public Flat() {
-	}
+	public Flat() {}
 
 	public int getId() {
 		return this.id;

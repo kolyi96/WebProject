@@ -6,7 +6,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "orders")
-@NamedQuery(name = "Order.findAll", query = "SELECT o FROM Order o ORDER BY o.date")
+@NamedQuery(name = "Order.findAll", query = "SELECT o FROM Order o ORDER BY o.id")
 public class Order implements Serializable, IModel {
 	private static final long serialVersionUID = 1L;
 
@@ -26,8 +26,7 @@ public class Order implements Serializable, IModel {
 	@JoinColumn(name = "id_flat")
 	private Flat flat;
 
-	public Order() {
-	}
+	public Order() {}
 
 	public int getId() {
 		return this.id;
