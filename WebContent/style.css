@@ -1,0 +1,152 @@
+ul{
+	margin: 0;
+	padding: 0;
+	text-align: center;
+}
+ul li{
+	list-style-type: none;
+}
+a{
+	text-decoration: none;
+}
+header{
+	color: #008000;
+	background-color: yellow;
+	text-align: center;
+	margin: 0;
+	padding: 10px 10px;
+	width: inherit;
+}
+p{
+	text-align: center;
+	margin: 0px;
+}
+body{
+	overflow: visible;
+	margin: 0;
+	height: inherit;
+	width: inherit;
+}
+h1, h2{
+	margin: 0px;
+}
+/*NAVIGATION*/
+.container{
+	margin: 0 auto;
+	width: 600px;
+}
+.page-navigation{
+	background-color: #222;
+	border-color: #101010;
+	min-height: 64px;	
+	text-align: center;
+	width: inherit;
+}
+.page-navigation div{
+	margin: 0 auto;
+	width: 450px;
+}
+.page-navigationOne{
+	background-color: black;
+	border-color: #101010;
+	text-align: center;
+}
+.page-navigationOne a{
+	display: block;
+	color: #808000;
+	line-height: 30px;
+	font-weight: bold;
+}
+.page-navigation li, .page-navigationOne li{
+	float: left;
+	width: 150px;
+}
+.page-navigation a{
+	display: block;
+	color: #9d9d9d;
+	line-height: 4em;
+	font-weight: bold;
+	text-align: center;
+}
+.page-navigationOne li a:hover{
+	color: yellowgreen;
+	background-color: black;
+}
+.choose{
+	height: inherit;	
+	width: 30%;
+	background-color: #e8e8e8;
+}
+
+.choose a{
+	display: block;
+	color: #000080;
+	line-height: 2em;
+	font-weight: bold;
+	text-align: center;
+}
+.choose li a:hover{
+	color: red;
+	background-color: black;
+}
+footer{
+    width: inherit;
+    height: 30px;
+	text-align: center;
+	font-size: 15px;
+	color: #dadada;
+	padding: 10px;
+	background-color: #222;
+}
+.choose div{
+	margin-top: 100px;
+	height: 200px;
+}
+#block{
+	width: 100%;
+	height: inherit;
+	display: flex;
+	flex-wrap: wrap;
+	align-content: stretch;
+}
+#table{
+	width: 70%;
+	height: inherit;	
+}
+table{
+    border-collapse: collapse;
+    width: 80%;
+    margin: 20px;
+}
+th{ 
+    background: #fc0; /* Цвет фона ячейки */
+}
+td{
+    background: #fff; /* Цвет фона ячеек */
+}
+th,td{
+	text-align: center; /* Выравнивание по центру */
+	width: 15px;
+    border: 1px solid black; /* Параметры рамки */
+    padding: 2px; /* Поля вокруг текста */
+}
+input[type="number"],input[type="text"]{
+	float: right;
+	width: 60%;
+}
+#flatBlock,#clientBlock,#managerBlock{
+	font-size: 15px;
+}
+#flatBlock div, #clientBlock div, #managerBlock div{
+	height: 30px;
+}
+input[type="submit"]{
+	margin-left: 40%;
+	width: 20%;
+}
+.Ok{
+	margin-top: 10px;
+}
+pre{
+	margin: 2px;
+}
