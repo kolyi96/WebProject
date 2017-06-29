@@ -11,116 +11,138 @@
 <html>
 <head>
 	<%!
-		JpaController controller = SelectTable.getController();
-		TableModel model;
-		
-		public String showFlat(String id_flat){
+		JpaController cont = new JpaController();
+		public String showFlat(){
+			TableModel model = cont.getModel("Flat");
 			StringBuilder sb = new StringBuilder();
-			model = controller.getModel("Flat");
 			for (int i = 0; i < model.getRowCount(); i++) {
 				String line = String.format("|%-3d|%-33s|%-4d|%-10.2f|%-5d|%-12.2f|", model.getValueAt(i, 0),
 			model.getValueAt(i, 1), model.getValueAt(i, 2), model.getValueAt(i, 3), model.getValueAt(i, 4),model.getValueAt(i, 5));
 				line = line.replaceAll(" ", "&nbsp;");
-				if(id_flat != null){
-					if(id_flat.equals(String.valueOf(model.getValueAt(i, 0))))
-						sb.append("<option selected value="+model.getValueAt(i, 0)+"><tt>"+line+"</tt></option>");
-					else
-						sb.append("<option value="+model.getValueAt(i, 0)+"><tt>"+line+"</tt></option>");			
-				}
-				else{
-					sb.append("<option value="+model.getValueAt(i, 0)+"><tt>"+line+"</tt></option>");
-				}
+				sb.append("<option value="+model.getValueAt(i, 0)+"><tt>"+line+"</tt></option>");
 			}
 			return sb.toString();
 		}
 		
-		public String showClient(String id_client){
-			StringBuilder sb = new StringBuilder();
-			model = controller.getModel("Client");
+		public String showClient(){
+			TableModel model = cont.getModel("Client");
+	 		StringBuilder sb = new StringBuilder();
 			for (int i = 0; i < model.getRowCount(); i++) {
 				String line = String.format("|%-3d|%-12s|%-10s|%-20s|%-13s|%-9s|", model.getValueAt(i, 0),model.getValueAt(i, 1), model.getValueAt(i, 2), model.getValueAt(i, 3), model.getValueAt(i, 4),model.getValueAt(i, 5));
 				line = line.replaceAll(" ", "&nbsp;");
-				if(id_client != null){
-					if(id_client.equals(String.valueOf(model.getValueAt(i, 0))))
-						sb.append("<option selected value="+model.getValueAt(i, 0)+"><tt>"+line+"</tt></option>");
-					else
-						sb.append("<option value="+model.getValueAt(i, 0)+"><tt>"+line+"</tt></option>");			
-				}
-				else{
-					sb.append("<option value="+model.getValueAt(i, 0)+"><tt>"+line+"</tt></option>");
-				}
+				sb.append("<option value="+model.getValueAt(i, 0)+"><tt>"+line+"</tt></option>");
 			}
 			return sb.toString();
 		}
 	%>
 	<% 
-		String table = (String)request.getAttribute("table");
-		String className = (String)request.getAttribute("className");
-		String act = (String)request.getAttribute("act");
-		String str = (String)request.getAttribute("str");
-		String id_flat = (String)request.getAttribute("id_flat");
-		String id_client = (String)request.getAttribute("id_client");
+		session.setAttribute("controller", new JpaController());
+		String className = (String)session.getAttribute("className");
+		String action = (String)session.getAttribute("action");
 	%>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>Web-додаток</title>
+	<meta http-equiv="Content-Type" charset="UTF-8" content="text/html; charset=UTF-8">
+	<title>Веб-приложение</title>
 	<link rel="stylesheet" href="style.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 	<script type="text/javascript">
-	$(document).ready(function() {
 	<%
-		if (act != null && className != null) {
-			if (act.equals("add"))
-				out.write("document.getElementById('select" + className + "').click();");
-			else if (act.equals("delete"))
-				out.write("document.getElementById('delete" + className + "').click();");
-			else if (act.equals("update"))
-				out.write("document.getElementById('change" + className + "').click();");
-	}%>
-	$("#flatBlock,#clientBlock,#orderBlock,#managerBlock").dialog({autoOpen:false, modal:true, resizable:false, show:'fade', draggable : false});
-	$("#flatBlock").dialog({title:'Квартира',width:400});
-	$("#clientBlock").dialog({title:'Клієнт',width:400});
-	$("#orderBlock").dialog({title:'Замовлення',width:650});
-	$("#managerBlock").dialog({title:'Менеджер',width:650});
-						$("#addTab a").click(function(event) {
-							block = $(this).attr('href');
-							$(block).dialog('open');	
-						});
-						$("#add,#edit,#delete").mouseenter(function(event) {
-							var id = "#" + $(this).attr('id');
-							$(id).css("color", "yellowgreen");
-							$(id).css("background-color", "black");
-							var s = id + "Tab";
-							$(s).slideDown(200, function() {
-								$(s).css("height", "30px");
-							});
-						});
-						$("#add,#edit,#delete").mouseleave(function() {
-							var id = "#" + $(this).attr('id');
-							var s = id + "Tab";
-							if (!$(s).is(":hover")) {
-								$(s).slideUp(200);
-								$(id).css("background-color", "#222");
-								$(id).css("color", "#9d9d9d");
-							}
-						});
-						$("#addTab,#editTab,#deleteTab").mouseleave(function() {
-							var id = "#" + $(this).attr('id');
-							var s = id.substr(0, id.length - 3);
-							if (!$(s).is(":hover")) {
-								$(id).slideUp(200);
-								$(s).css("background-color", "#222");
-								$(s).css("color", "#9d9d9d");
-							}
-						});
-						<%
-						if (act != null && className != null) {
-								if(str != null){
-									out.write(str);
-								}
-						}%>
-					});
+	if(className == null){
+		session.setAttribute("className", "Empty");
+		className = "Empty";
+	}
+	%>
+	var className = "<%=className%>";
+	function showTable(obj,action){
+		if(obj != '')
+			className = obj;
+		if(className == "Empty")
+			$("#table").replaceWith("<div id='table' align='center'>Виберіть таблицю!!!</div>"); 
+		else{
+			$.ajax({
+		        type: "GET",
+		        processData: false,
+	            url: "SelectTable",
+		        data: "className="+className+"&action="+action,
+	            success: function(result){
+	            	$("#table").replaceWith("<div id='table'>"+result+"</div>");                                 
+	            }, 
+	       });
+		}
+	}
+	function addRow(){
+		$("input").val("");
+		if(className == "Empty")
+			$('#table').text('Для начала выберите таблицу!');
+		else if(className == "Flat")
+			$('#flatBlock').dialog('open');
+		else if(className == "Order")
+			$('#orderBlock').dialog('open');
+		else if(className == "Manager")
+			$('#managerBlock').dialog('open');
+		else if(className == "Client")
+			$('#clientBlock').dialog('open');
+	}
+	function changeRow(id){
+		$.ajax({
+	        type: "GET",
+	        processData: false,
+            url: "ChangeRow",
+	        data: "className="+className+"&id="+id,
+            success: function(result){
+            	var obj = jQuery.parseJSON(result);
+            	if(className == "Flat"){
+            		$('#flatBlock input[name="id"]').val(obj[0]);
+            		$('#flatBlock input[name="address"]').val(obj[1]);
+            		$('#flatBlock input[name="number"]').val(obj[2]);
+            		$('#flatBlock input[name="square"]').val(obj[3]);
+            		$('#flatBlock input[name="countRoom"]').val(obj[4]);
+            		$('#flatBlock input[name="price"]').val(obj[5]);
+        			$('#flatBlock').dialog('open');
+            	}
+        		else if(className == "Order"){
+        			$('#orderBlock input[name="id"]').val(obj[0]);
+        			$('#orderBlock').dialog('open');
+        		}
+        		else if(className == "Manager"){
+        			$('#managerBlock input[name="id"]').val(obj[0]);
+            		$('#managerBlock input[name="surname"]').val(obj[1]);
+            		$('#managerBlock input[name="name"]').val(obj[2]);
+            		$('#managerBlock input[name="phone"]').val(obj[3]);
+            		$('#managerBlock input[name="email"]').val(obj[4]);
+        			$('#managerBlock').dialog('open');
+        		}
+        		else if(className == "Client"){
+        			$('#clientBlock input[name="id"]').val(obj[0]);
+            		$('#clientBlock input[name="surname"]').val(obj[1]);
+            		$('#clientBlock input[name="name"]').val(obj[2]);
+            		$('#clientBlock input[name="phone"]').val(obj[3]);
+            		$('#clientBlock input[name="email"]').val(obj[4]);
+            		$('#clientBlock input[name="passport"]').val(obj[5]);
+        			$('#clientBlock').dialog('open');
+        		}
+            }, 
+       });
+	}
+	$(document).ready(function() {
+		$("#flatBlock,#clientBlock,#orderBlock,#managerBlock").dialog({autoOpen:false, modal:true, resizable:false, show:'fade', draggable : false});
+		$("#flatBlock").dialog({title:'Квартира',width:400});
+		$("#clientBlock").dialog({title:'Клієнт',width:400});
+		$("#orderBlock").dialog({title:'Замовлення',width:650});
+		$("#managerBlock").dialog({title:'Менеджер',width:650});
+		$("#add,#edit,#delete").mouseenter(function(event) {
+			var id = "#" + $(this).attr('id');
+			$(id).css("color", "yellowgreen");
+			$(id).css("background-color", "black");
+		});
+		$("#add,#edit,#delete").mouseleave(function() {
+			var id = "#" + $(this).attr('id');
+			$(id).css("background-color", "#222");
+			$(id).css("color", "#9d9d9d");
+		});
+		showTable(className,"<%=action%>");
+	});
 	</script>
 </head>
 <body>
@@ -129,53 +151,15 @@
 		<h2>БД "Продаж квартир"</h2>
 	</header>
 	<nav class="page-navigation">
-		<div>
+		<div class="container">
 			<ul>
-				<li><a id="add" href="#">Додати</a></li>
-				<li><a id="edit" href="#">Редагувати</a></li>
-				<li><a id="delete" href="#">Видалити</a></li>
+				<li><a id="add" href="#" onclick="addRow();">Додати</a></li>
+				<li><a id="edit" href="#" onclick="showTable('','Change');">Редагувати</a></li>
+				<li><a id="delete" href="#" onclick="showTable('','Delete');">Видалити</a></li>
 			</ul>
 		</div>
 	</nav>
-	<div id="addTab" class="page-navigationOne" hidden>
-		<div class="container">
-			<ul>
-				<li><a href="#flatBlock">Квартира</a></li>
-				<li><a href="#orderBlock">Замовлення</a></li>
-				<li><a href="#clientBlock">Кліент</a></li>
-				<li><a href="#managerBlock">Менеджер</a></li>
-			</ul>
-		</div>
-	</div>
-	<div id="editTab" class="page-navigationOne" hidden>
-		<div class="container">
-			<ul>
-				<li><a id="changeFlat"
-					href="SelectTable?className=Flat&act=ChangeAction">Квартира</a></li>
-				<li><a id="changeOrder"
-					href="SelectTable?className=Order&act=ChangeAction">Замовлення</a></li>
-				<li><a id="changeClient"
-					href="SelectTable?className=Client&act=ChangeAction">Кліент</a></li>
-				<li><a id="changeManager"
-					href="SelectTable?className=Manager&act=ChangeAction">Менеджер</a></li>
-			</ul>
-		</div>
-	</div>
-	<div id="deleteTab" class="page-navigationOne" hidden>
-		<div class="container">
-			<ul>
-				<li><a id="deleteFlat"
-					href="SelectTable?className=Flat&act=DeleteAction">Квартира</a></li>
-				<li><a id="deleteOrder"
-					href="SelectTable?className=Order&act=DeleteAction">Замовлення</a></li>
-				<li><a id="deleteClient"
-					href="SelectTable?className=Client&act=DeleteAction">Кліент</a></li>
-				<li><a id="deleteManager"
-					href="SelectTable?className=Manager&act=DeleteAction">Менеджер</a></li>
-			</ul>
-		</div>
-	</div>
-	<div id="flatBlock" hidden>
+	<div id="flatBlock" hidden="true">
 		<form action="AddRow" method="GET">
 			<input type="hidden" name="id"> 
 			<div>Адреса<input type="text" name="address"></div>
@@ -183,11 +167,10 @@
 			<div>Площа<input type="text" name="square"></div>
 			<div>Кіль. кімнат<input type="number" name="countRoom"></div>
 			<div>Ціна<input type="text" name="price"></div>
-			<input type="hidden" name="className" value="Flat"> 
 			<input name="accept" type="submit" value="OK">
 		</form>
 	</div>
-	<div id="clientBlock" hidden>
+	<div id="clientBlock" hidden="true">
 		<form action="AddRow" method="GET">
 			<input type="hidden" name="id"> 
 			<div>Прізвище<input type="text" name="surname"></div>
@@ -195,28 +178,26 @@
 			<div>Ел.пошта<input type="text" name="email"></div>
 			<div>Телефон<input type="text" name="phone"></div>
 			<div>Номер паспорта<input type="text" name="passport"></div>
-			<input type="hidden" name="className" value="Client"> 
 			<input name="accept" type="submit" value="OK">
 		</form>
 	</div>
-	<div id="orderBlock" hidden>
+	<div id="orderBlock" hidden="true">
 		<form action="AddRow" method="GET">
 			<input type="hidden" name="id"> 
 			<p>Виберіть квартиру</p>
 			<pre>  ID               Адреса               №кв.  Площа     Кімн.    Ціна</pre>
 			<select name="selectFlat" style="font-family: monospace">
-				<% out.write(showFlat(id_flat));%>
+				<% out.write(showFlat());%>
 			</select>
 			<p>Виберіть клієнта</p>
 			<pre>  ID   Прізвище       Ім'я         Ел.пошта         Телефон      Паспорт</pre>
 			<select name="selectClient" style="font-family: monospace">
-				<% out.write(showClient(id_client));%>
+				<% out.write(showClient());%>
 			</select> 
-			<input type="hidden" name="className" value="Order">
 			<input class="Ok" name="accept" type="submit" value="OK">
 		</form>
 	</div>
-	<div id="managerBlock" hidden>
+	<div id="managerBlock" hidden="true">
 		<form action="AddRow" method="GET">
 			<input type="hidden" name="id"> 
 			<div>Прізвище<input type="text" name="surname"></div>
@@ -226,9 +207,8 @@
 			<p>Виберіть квартиру</p>
 			<pre>  ID               Адреса               №кв.   Площа   Кімн.      Ціна</pre>
 			<select name="selectFlat" style="font-family: monospace">
-				<% out.write(showFlat(id_flat));%>
+				<% out.write(showFlat());%>
 			</select> 
-			<input type="hidden" name="className" value="Manager"> 
 			<input class="Ok" name="accept" type="submit" value="OK">
 		</form>
 	</div>
@@ -237,19 +217,15 @@
 			<div>
 				<ul>
 					Виберіть таблицю для відображення:
-					<li><a id="selectFlat" href="SelectTable?className=Flat&act=AddAction">Квартири</a></li>
-					<li><a id="selectOrder" href="SelectTable?className=Order&act=AddAction">Замовлення</a></li>
-					<li><a id="selectClient" href="SelectTable?className=Client&act=AddAction">Клієнти</a></li>
-					<li><a id="selectManager" href="SelectTable?className=Manager&act=AddAction">Менеджери</a></li>
+					<li><a id="selectFlat" href="#" onclick='showTable("Flat");'>Квартири</a></li>
+					<li><a id="selectOrder" href="#" onclick='showTable("Order");'>Замовлення</a></li>
+					<li><a id="selectClient" href="#" onclick='showTable("Client");'>Клієнти</a></li>
+					<li><a id="selectManager" href="#" onclick='showTable("Manager");'>Менеджери</a></li>
 				</ul>
 			</div>
 		</div>
-		<div id="table">
-			<%if(table != null)
-				out.write(table.toString());
-			%>
-		</div>
+		<div id="table"></div>
 	</div>
-	<footer> 2017 </footer>
+	<footer>2017</footer>
 </body>
 </html>

@@ -115,8 +115,8 @@ footer{
 }
 table{
     border-collapse: collapse;
-    width: 80%;
-    margin: 20px;
+    width: 100%;
+    margin: 10px;
 }
 th{ 
     background: #fc0; /* Цвет фона ячейки */

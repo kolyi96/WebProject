@@ -7,6 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.swing.table.TableModel;
 import controller.JpaController;
 import model.Client;
@@ -23,8 +24,9 @@ public class AddRow extends HttpServlet {
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		JpaController controller = SelectTable.getController();
-		String className = (String)request.getParameter("className");
+		HttpSession session = request.getSession();
+		JpaController controller = (JpaController)session.getAttribute("controller");
+		String className = (String)session.getAttribute("className");
 		IModel obj = null;
 		if(className == "")
 			return;
@@ -101,18 +103,11 @@ public class AddRow extends HttpServlet {
 			((Manager)obj).setFlat(flat);
 		}
 		String id = request.getParameter("id");
-		if(id != ""){
-			request.setAttribute("className", className);
-			request.setAttribute("id", id);
-			request.setAttribute("obj", obj);
-			request.getRequestDispatcher("UpdateRow").include(request, response);
-		}
-		else{
+		if(id != "")
+			controller.edit(Integer.parseInt(id),obj);
+		else
 			controller.add(obj);
-			request.setAttribute("className", className);
-			request.setAttribute("act", "add");
-			request.getRequestDispatcher("index.jsp").forward(request, response);
-		}
+		request.getRequestDispatcher("index.jsp").forward(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
